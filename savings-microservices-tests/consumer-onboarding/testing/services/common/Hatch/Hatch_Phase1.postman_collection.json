@@ -1,0 +1,5463 @@
+{
+	"info": {
+		"_postman_id": "bcfd944f-8498-4163-8997-f7e210fc476e",
+		"name": "Hatch_Phase1",
+		"description": "Author: Prashant Bhate\n\nThis collection runs end to end journey for selected env via F5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Success",
+			"item": [
+				{
+					"name": "302 /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"   var _url = require('url')",
+									"   var locationHeader = postman.getResponseHeader(\"Location\")",
+									"   var url = _url.parse(locationHeader,true)",
+									"   ",
+									"   pm.environment.set('online_login_url',locationHeader)",
+									"   pm.environment.set('online_host',url.hostname)",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/logon/login.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"logon",
+								"login.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "online /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"value\")).to.not.be.empty\r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{online_login_url}}",
+							"host": [
+								"{{online_login_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/primarylogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/login?mobile=false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmLogin:strCustomerLogin_userID",
+									"value": "{{userID}}",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:strCustomerLogin_pwd",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "target",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "testenv",
+									"value": "https://{{host}}/personal/login",
+									"type": "text"
+								},
+								{
+									"key": "hdn_mobile",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dclinkjourid",
+									"value": "RiVUKTMVBgjg1ESsspdMGq8wZXde08st",
+									"type": "text"
+								},
+								{
+									"key": "wup_url",
+									"value": "https://wup-karma.lloydsbank.co.uk/client/v3/web/wup?cid=karma",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:btnLogin1",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{online_host}}/personal/primarylogin",
+							"protocol": "https",
+							"host": [
+								"{{online_host}}"
+							],
+							"path": [
+								"personal",
+								"primarylogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/login?mobile=false",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/a/logon/entermemorableinformation.jsp\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/login?mobile=false",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"login"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"name\")).to.not.be.empty \r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"it should ask for memorableInfo\", () => {\r",
+									"\r",
+									"    var passWord = \"t35ting\"; \r",
+									"    var passChar; \r",
+									"    $(\"select\").each(function (i,elem) {\r",
+									"        var num = $(\"label[for='frmentermemorableinformation1:strEnterMemorableInformation_memInfo\" + (i+1) + \"'], label[for= 'frmLogin:strEnterMI\" + (i+1) + \"'] \")\r",
+									"        .text().substring(10, 11)\r",
+									"        var charVal = parseInt(num); \r",
+									"        passChar = passWord.substring(charVal - 1, charVal); \r",
+									"        //$(this).val(\" \" + passChar);\r",
+									"        console.log(passChar)\r",
+									"        pm.environment.set('memorable'+(i+1), passChar)\r",
+									"\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.environment.set('clientSysTime', Date.now())\r",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/pageLoad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/pageLoad?clientSysTime={{clientSysTime}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"pageLoad"
+							],
+							"query": [
+								{
+									"key": "clientSysTime",
+									"value": "{{clientSysTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo1",
+									"value": "&nbsp;{{memorable1}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo2",
+									"value": "&nbsp;{{memorable2}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo3",
+									"value": "&nbsp;{{memorable3}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1",
+									"value": "frmentermemorableinformation1",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:btnContinue",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/account_overview_personal/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/account_overview_personal/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"account_overview_personal",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/common-api/v2/retail-identity-assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns saml token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.samlToken).to.not.be.empty;",
+									"    postman.setEnvironmentVariable(\"saml_token\", jsonData.samlToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/common-api/v2/retail-identity-assertion",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"common-api",
+								"v2",
+								"retail-identity-assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-initiate-service-v1/initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'id', 'brand', 'channel' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid brand\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.brand).to.eql(pm.variables.get(\"brand\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid channel\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.channel).to.eql(pm.variables.get(\"channel\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-initiate-service-{{initiate}}/initiate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-initiate-service-{{initiate}}",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-sso-service-v1/authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'logoutURL', 'keepAliveURL', 'returnURL' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid logoutURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.logoutURL).to.include(\"/personal/link?Action=autologoff\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid keepAliveURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.keepAliveURL).to.include(\"/personal/common-api/v1/keepAlive\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid returnURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.returnURL).to.include(\"sso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"samlToken\":\"{{saml_token}}\"\t\n}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-sso-service-{{sso}}/authenticate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-sso-service-{{sso}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/eligibility-service-{{eligibility}}product/eligibility/hatch/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has eligibility true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.isEligible).to.be.equal(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"productId\":\"P_HAT_PCA\",\"arrangementType\":\"PCA\"}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/eligibility-service-{{eligibility}}/product/eligibility/hatch/parent",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"eligibility-service-{{eligibility}}",
+								"product",
+								"eligibility",
+								"hatch",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Failure_NonUKResident",
+			"item": [
+				{
+					"name": "302 /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"   var _url = require('url')",
+									"   var locationHeader = postman.getResponseHeader(\"Location\")",
+									"   var url = _url.parse(locationHeader,true)",
+									"   ",
+									"   pm.environment.set('online_login_url',locationHeader)",
+									"   pm.environment.set('online_host',url.hostname)",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/logon/login.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"logon",
+								"login.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "online /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"value\")).to.not.be.empty\r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{online_login_url}}",
+							"host": [
+								"{{online_login_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/primarylogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/login?mobile=false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmLogin:strCustomerLogin_userID",
+									"value": "{{userID_nonuk}}",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:strCustomerLogin_pwd",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "target",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "testenv",
+									"value": "https://{{host}}/personal/login",
+									"type": "text"
+								},
+								{
+									"key": "hdn_mobile",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dclinkjourid",
+									"value": "RiVUKTMVBgjg1ESsspdMGq8wZXde08st",
+									"type": "text"
+								},
+								{
+									"key": "wup_url",
+									"value": "https://wup-karma.lloydsbank.co.uk/client/v3/web/wup?cid=karma",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:btnLogin1",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{online_host}}/personal/primarylogin",
+							"protocol": "https",
+							"host": [
+								"{{online_host}}"
+							],
+							"path": [
+								"personal",
+								"primarylogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/login?mobile=false",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/a/logon/entermemorableinformation.jsp\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/login?mobile=false",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"login"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"name\")).to.not.be.empty \r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"it should ask for memorableInfo\", () => {\r",
+									"\r",
+									"    var passWord = \"t35ting\"; \r",
+									"    var passChar; \r",
+									"    $(\"select\").each(function (i,elem) {\r",
+									"        var num = $(\"label[for='frmentermemorableinformation1:strEnterMemorableInformation_memInfo\" + (i+1) + \"'], label[for= 'frmLogin:strEnterMI\" + (i+1) + \"'] \")\r",
+									"        .text().substring(10, 11)\r",
+									"        var charVal = parseInt(num); \r",
+									"        passChar = passWord.substring(charVal - 1, charVal); \r",
+									"        //$(this).val(\" \" + passChar);\r",
+									"        console.log(passChar)\r",
+									"        pm.environment.set('memorable'+(i+1), passChar)\r",
+									"\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.environment.set('clientSysTime', Date.now())\r",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/pageLoad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/pageLoad?clientSysTime={{clientSysTime}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"pageLoad"
+							],
+							"query": [
+								{
+									"key": "clientSysTime",
+									"value": "{{clientSysTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo1",
+									"value": "&nbsp;{{memorable1}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo2",
+									"value": "&nbsp;{{memorable2}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo3",
+									"value": "&nbsp;{{memorable3}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1",
+									"value": "frmentermemorableinformation1",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:btnContinue",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/account_overview_personal/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/account_overview_personal/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"account_overview_personal",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/common-api/v2/retail-identity-assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns saml token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.samlToken).to.not.be.empty;",
+									"    postman.setEnvironmentVariable(\"saml_token\", jsonData.samlToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/common-api/v2/retail-identity-assertion",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"common-api",
+								"v2",
+								"retail-identity-assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-initiate-service-v1/initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'id', 'brand', 'channel' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid brand\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.brand).to.eql(pm.variables.get(\"brand\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid channel\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.channel).to.eql(pm.variables.get(\"channel\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-initiate-service-{{initiate}}/initiate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-initiate-service-{{initiate}}",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-sso-service-v1/authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'logoutURL', 'keepAliveURL', 'returnURL' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid logoutURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.logoutURL).to.include(\"/personal/link?Action=autologoff\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid keepAliveURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.keepAliveURL).to.include(\"/personal/common-api/v1/keepAlive\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid returnURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.returnURL).to.include(\"sso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"samlToken\":\"{{saml_token}}\"\t\n}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-sso-service-{{sso}}/authenticate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-sso-service-{{sso}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/eligibility-service-{{eligibility}}product/eligibility/hatch/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has eligibility false\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.isEligible).to.be.equal(false);  ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"productId\":\"P_HAT_PCA\",\"arrangementType\":\"PCA\"}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/eligibility-service-{{eligibility}}/product/eligibility/hatch/parent",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"eligibility-service-{{eligibility}}",
+								"product",
+								"eligibility",
+								"hatch",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Failure_Restrictedpostcode",
+			"item": [
+				{
+					"name": "302 /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"   var _url = require('url')",
+									"   var locationHeader = postman.getResponseHeader(\"Location\")",
+									"   var url = _url.parse(locationHeader,true)",
+									"   ",
+									"   pm.environment.set('online_login_url',locationHeader)",
+									"   pm.environment.set('online_host',url.hostname)",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/logon/login.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"logon",
+								"login.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "online /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"value\")).to.not.be.empty\r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{online_login_url}}",
+							"host": [
+								"{{online_login_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/primarylogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/login?mobile=false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmLogin:strCustomerLogin_userID",
+									"value": "{{userID_Respostcode}}",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:strCustomerLogin_pwd",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "target",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "testenv",
+									"value": "https://{{host}}/personal/login",
+									"type": "text"
+								},
+								{
+									"key": "hdn_mobile",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dclinkjourid",
+									"value": "RiVUKTMVBgjg1ESsspdMGq8wZXde08st",
+									"type": "text"
+								},
+								{
+									"key": "wup_url",
+									"value": "https://wup-karma.lloydsbank.co.uk/client/v3/web/wup?cid=karma",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:btnLogin1",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{online_host}}/personal/primarylogin",
+							"protocol": "https",
+							"host": [
+								"{{online_host}}"
+							],
+							"path": [
+								"personal",
+								"primarylogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/login?mobile=false",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/a/logon/entermemorableinformation.jsp\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/login?mobile=false",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"login"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"name\")).to.not.be.empty \r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"it should ask for memorableInfo\", () => {\r",
+									"\r",
+									"    var passWord = \"t35ting\"; \r",
+									"    var passChar; \r",
+									"    $(\"select\").each(function (i,elem) {\r",
+									"        var num = $(\"label[for='frmentermemorableinformation1:strEnterMemorableInformation_memInfo\" + (i+1) + \"'], label[for= 'frmLogin:strEnterMI\" + (i+1) + \"'] \")\r",
+									"        .text().substring(10, 11)\r",
+									"        var charVal = parseInt(num); \r",
+									"        passChar = passWord.substring(charVal - 1, charVal); \r",
+									"        //$(this).val(\" \" + passChar);\r",
+									"        console.log(passChar)\r",
+									"        pm.environment.set('memorable'+(i+1), passChar)\r",
+									"\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.environment.set('clientSysTime', Date.now())\r",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/pageLoad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/pageLoad?clientSysTime={{clientSysTime}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"pageLoad"
+							],
+							"query": [
+								{
+									"key": "clientSysTime",
+									"value": "{{clientSysTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo1",
+									"value": "&nbsp;{{memorable1}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo2",
+									"value": "&nbsp;{{memorable2}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo3",
+									"value": "&nbsp;{{memorable3}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1",
+									"value": "frmentermemorableinformation1",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:btnContinue",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/account_overview_personal/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/account_overview_personal/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"account_overview_personal",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/common-api/v2/retail-identity-assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns saml token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.samlToken).to.not.be.empty;",
+									"    postman.setEnvironmentVariable(\"saml_token\", jsonData.samlToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/common-api/v2/retail-identity-assertion",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"common-api",
+								"v2",
+								"retail-identity-assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-initiate-service-v1/initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'id', 'brand', 'channel' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid brand\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.brand).to.eql(pm.variables.get(\"brand\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid channel\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.channel).to.eql(pm.variables.get(\"channel\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-initiate-service-{{initiate}}/initiate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-initiate-service-{{initiate}}",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-sso-service-v1/authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'logoutURL', 'keepAliveURL', 'returnURL' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid logoutURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.logoutURL).to.include(\"/personal/link?Action=autologoff\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid keepAliveURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.keepAliveURL).to.include(\"/personal/common-api/v1/keepAlive\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid returnURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.returnURL).to.include(\"sso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"samlToken\":\"{{saml_token}}\"\t\n}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-sso-service-{{sso}}/authenticate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-sso-service-{{sso}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/eligibility-service-{{eligibility}}product/eligibility/hatch/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has eligibility false\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.isEligible).to.be.equal(false);  ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"productId\":\"P_HAT_PCA\",\"arrangementType\":\"PCA\"}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/eligibility-service-{{eligibility}}/product/eligibility/hatch/parent",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"eligibility-service-{{eligibility}}",
+								"product",
+								"eligibility",
+								"hatch",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Failure_Age18",
+			"item": [
+				{
+					"name": "302 /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"   var _url = require('url')",
+									"   var locationHeader = postman.getResponseHeader(\"Location\")",
+									"   var url = _url.parse(locationHeader,true)",
+									"   ",
+									"   pm.environment.set('online_login_url',locationHeader)",
+									"   pm.environment.set('online_host',url.hostname)",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/logon/login.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"logon",
+								"login.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "online /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"value\")).to.not.be.empty\r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{online_login_url}}",
+							"host": [
+								"{{online_login_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/primarylogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/login?mobile=false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmLogin:strCustomerLogin_userID",
+									"value": "{{userID_Age}}",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:strCustomerLogin_pwd",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "target",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "testenv",
+									"value": "https://{{host}}/personal/login",
+									"type": "text"
+								},
+								{
+									"key": "hdn_mobile",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dclinkjourid",
+									"value": "RiVUKTMVBgjg1ESsspdMGq8wZXde08st",
+									"type": "text"
+								},
+								{
+									"key": "wup_url",
+									"value": "https://wup-karma.lloydsbank.co.uk/client/v3/web/wup?cid=karma",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:btnLogin1",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{online_host}}/personal/primarylogin",
+							"protocol": "https",
+							"host": [
+								"{{online_host}}"
+							],
+							"path": [
+								"personal",
+								"primarylogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/login?mobile=false",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/a/logon/entermemorableinformation.jsp\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/login?mobile=false",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"login"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"name\")).to.not.be.empty \r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"it should ask for memorableInfo\", () => {\r",
+									"\r",
+									"    var passWord = \"t35ting\"; \r",
+									"    var passChar; \r",
+									"    $(\"select\").each(function (i,elem) {\r",
+									"        var num = $(\"label[for='frmentermemorableinformation1:strEnterMemorableInformation_memInfo\" + (i+1) + \"'], label[for= 'frmLogin:strEnterMI\" + (i+1) + \"'] \")\r",
+									"        .text().substring(10, 11)\r",
+									"        var charVal = parseInt(num); \r",
+									"        passChar = passWord.substring(charVal - 1, charVal); \r",
+									"        //$(this).val(\" \" + passChar);\r",
+									"        console.log(passChar)\r",
+									"        pm.environment.set('memorable'+(i+1), passChar)\r",
+									"\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.environment.set('clientSysTime', Date.now())\r",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/pageLoad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/pageLoad?clientSysTime={{clientSysTime}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"pageLoad"
+							],
+							"query": [
+								{
+									"key": "clientSysTime",
+									"value": "{{clientSysTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo1",
+									"value": "&nbsp;{{memorable1}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo2",
+									"value": "&nbsp;{{memorable2}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo3",
+									"value": "&nbsp;{{memorable3}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1",
+									"value": "frmentermemorableinformation1",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:btnContinue",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/account_overview_personal/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/account_overview_personal/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"account_overview_personal",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/common-api/v2/retail-identity-assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns saml token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.samlToken).to.not.be.empty;",
+									"    postman.setEnvironmentVariable(\"saml_token\", jsonData.samlToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/common-api/v2/retail-identity-assertion",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"common-api",
+								"v2",
+								"retail-identity-assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-initiate-service-v1/initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'id', 'brand', 'channel' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid brand\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.brand).to.eql(pm.variables.get(\"brand\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid channel\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.channel).to.eql(pm.variables.get(\"channel\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-initiate-service-{{initiate}}/initiate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-initiate-service-{{initiate}}",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-sso-service-v1/authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'logoutURL', 'keepAliveURL', 'returnURL' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid logoutURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.logoutURL).to.include(\"/personal/link?Action=autologoff\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid keepAliveURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.keepAliveURL).to.include(\"/personal/common-api/v1/keepAlive\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid returnURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.returnURL).to.include(\"sso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"samlToken\":\"{{saml_token}}\"\t\n}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-sso-service-{{sso}}/authenticate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-sso-service-{{sso}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/eligibility-service-{{eligibility}}product/eligibility/hatch/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has eligibility false\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.isEligible).to.be.equal(false); ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"productId\":\"P_HAT_PCA\",\"arrangementType\":\"PCA\"}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/eligibility-service-{{eligibility}}/product/eligibility/hatch/parent",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"eligibility-service-{{eligibility}}",
+								"product",
+								"eligibility",
+								"hatch",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Failure_Indicator11",
+			"item": [
+				{
+					"name": "302 /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"   var _url = require('url')",
+									"   var locationHeader = postman.getResponseHeader(\"Location\")",
+									"   var url = _url.parse(locationHeader,true)",
+									"   ",
+									"   pm.environment.set('online_login_url',locationHeader)",
+									"   pm.environment.set('online_host',url.hostname)",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/logon/login.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"logon",
+								"login.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "online /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"value\")).to.not.be.empty\r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{online_login_url}}",
+							"host": [
+								"{{online_login_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/primarylogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/login?mobile=false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmLogin:strCustomerLogin_userID",
+									"value": "{{userID_Ind11}}",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:strCustomerLogin_pwd",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "target",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "testenv",
+									"value": "https://{{host}}/personal/login",
+									"type": "text"
+								},
+								{
+									"key": "hdn_mobile",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dclinkjourid",
+									"value": "RiVUKTMVBgjg1ESsspdMGq8wZXde08st",
+									"type": "text"
+								},
+								{
+									"key": "wup_url",
+									"value": "https://wup-karma.lloydsbank.co.uk/client/v3/web/wup?cid=karma",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:btnLogin1",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{online_host}}/personal/primarylogin",
+							"protocol": "https",
+							"host": [
+								"{{online_host}}"
+							],
+							"path": [
+								"personal",
+								"primarylogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/login?mobile=false",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/a/logon/entermemorableinformation.jsp\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/login?mobile=false",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"login"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"name\")).to.not.be.empty \r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"it should ask for memorableInfo\", () => {\r",
+									"\r",
+									"    var passWord = \"t35ting\"; \r",
+									"    var passChar; \r",
+									"    $(\"select\").each(function (i,elem) {\r",
+									"        var num = $(\"label[for='frmentermemorableinformation1:strEnterMemorableInformation_memInfo\" + (i+1) + \"'], label[for= 'frmLogin:strEnterMI\" + (i+1) + \"'] \")\r",
+									"        .text().substring(10, 11)\r",
+									"        var charVal = parseInt(num); \r",
+									"        passChar = passWord.substring(charVal - 1, charVal); \r",
+									"        //$(this).val(\" \" + passChar);\r",
+									"        console.log(passChar)\r",
+									"        pm.environment.set('memorable'+(i+1), passChar)\r",
+									"\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.environment.set('clientSysTime', Date.now())\r",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/pageLoad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/pageLoad?clientSysTime={{clientSysTime}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"pageLoad"
+							],
+							"query": [
+								{
+									"key": "clientSysTime",
+									"value": "{{clientSysTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo1",
+									"value": "&nbsp;{{memorable1}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo2",
+									"value": "&nbsp;{{memorable2}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo3",
+									"value": "&nbsp;{{memorable3}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1",
+									"value": "frmentermemorableinformation1",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:btnContinue",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/account_overview_personal/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/account_overview_personal/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"account_overview_personal",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/common-api/v2/retail-identity-assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns saml token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.samlToken).to.not.be.empty;",
+									"    postman.setEnvironmentVariable(\"saml_token\", jsonData.samlToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/common-api/v2/retail-identity-assertion",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"common-api",
+								"v2",
+								"retail-identity-assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-initiate-service-v1/initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'id', 'brand', 'channel' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid brand\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.brand).to.eql(pm.variables.get(\"brand\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid channel\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.channel).to.eql(pm.variables.get(\"channel\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-initiate-service-{{initiate}}/initiate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-initiate-service-{{initiate}}",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-sso-service-v1/authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'logoutURL', 'keepAliveURL', 'returnURL' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid logoutURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.logoutURL).to.include(\"/personal/link?Action=autologoff\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid keepAliveURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.keepAliveURL).to.include(\"/personal/common-api/v1/keepAlive\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid returnURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.returnURL).to.include(\"sso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"samlToken\":\"{{saml_token}}\"\t\n}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-sso-service-{{sso}}/authenticate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-sso-service-{{sso}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/eligibility-service-{{eligibility}}product/eligibility/hatch/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has eligibility false\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.isEligible).to.be.equal(false);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"productId\":\"P_HAT_PCA\",\"arrangementType\":\"PCA\"}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/eligibility-service-{{eligibility}}/product/eligibility/hatch/parent",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"eligibility-service-{{eligibility}}",
+								"product",
+								"eligibility",
+								"hatch",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Failure_Indicator13",
+			"item": [
+				{
+					"name": "302 /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"   var _url = require('url')",
+									"   var locationHeader = postman.getResponseHeader(\"Location\")",
+									"   var url = _url.parse(locationHeader,true)",
+									"   ",
+									"   pm.environment.set('online_login_url',locationHeader)",
+									"   pm.environment.set('online_host',url.hostname)",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/logon/login.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"logon",
+								"login.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "online /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"value\")).to.not.be.empty\r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{online_login_url}}",
+							"host": [
+								"{{online_login_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/primarylogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/login?mobile=false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmLogin:strCustomerLogin_userID",
+									"value": "{{userID_Ind13}}",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:strCustomerLogin_pwd",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "target",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "testenv",
+									"value": "https://{{host}}/personal/login",
+									"type": "text"
+								},
+								{
+									"key": "hdn_mobile",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dclinkjourid",
+									"value": "RiVUKTMVBgjg1ESsspdMGq8wZXde08st",
+									"type": "text"
+								},
+								{
+									"key": "wup_url",
+									"value": "https://wup-karma.lloydsbank.co.uk/client/v3/web/wup?cid=karma",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:btnLogin1",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{online_host}}/personal/primarylogin",
+							"protocol": "https",
+							"host": [
+								"{{online_host}}"
+							],
+							"path": [
+								"personal",
+								"primarylogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/login?mobile=false",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/a/logon/entermemorableinformation.jsp\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/login?mobile=false",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"login"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"name\")).to.not.be.empty \r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"it should ask for memorableInfo\", () => {\r",
+									"\r",
+									"    var passWord = \"t35ting\"; \r",
+									"    var passChar; \r",
+									"    $(\"select\").each(function (i,elem) {\r",
+									"        var num = $(\"label[for='frmentermemorableinformation1:strEnterMemorableInformation_memInfo\" + (i+1) + \"'], label[for= 'frmLogin:strEnterMI\" + (i+1) + \"'] \")\r",
+									"        .text().substring(10, 11)\r",
+									"        var charVal = parseInt(num); \r",
+									"        passChar = passWord.substring(charVal - 1, charVal); \r",
+									"        //$(this).val(\" \" + passChar);\r",
+									"        console.log(passChar)\r",
+									"        pm.environment.set('memorable'+(i+1), passChar)\r",
+									"\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.environment.set('clientSysTime', Date.now())\r",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/pageLoad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/pageLoad?clientSysTime={{clientSysTime}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"pageLoad"
+							],
+							"query": [
+								{
+									"key": "clientSysTime",
+									"value": "{{clientSysTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo1",
+									"value": "&nbsp;{{memorable1}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo2",
+									"value": "&nbsp;{{memorable2}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo3",
+									"value": "&nbsp;{{memorable3}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1",
+									"value": "frmentermemorableinformation1",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:btnContinue",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/account_overview_personal/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/account_overview_personal/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"account_overview_personal",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/common-api/v2/retail-identity-assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns saml token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.samlToken).to.not.be.empty;",
+									"    postman.setEnvironmentVariable(\"saml_token\", jsonData.samlToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/common-api/v2/retail-identity-assertion",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"common-api",
+								"v2",
+								"retail-identity-assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-initiate-service-v1/initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'id', 'brand', 'channel' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid brand\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.brand).to.eql(pm.variables.get(\"brand\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid channel\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.channel).to.eql(pm.variables.get(\"channel\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-initiate-service-{{initiate}}/initiate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-initiate-service-{{initiate}}",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-sso-service-v1/authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'logoutURL', 'keepAliveURL', 'returnURL' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid logoutURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.logoutURL).to.include(\"/personal/link?Action=autologoff\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid keepAliveURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.keepAliveURL).to.include(\"/personal/common-api/v1/keepAlive\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid returnURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.returnURL).to.include(\"sso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"samlToken\":\"{{saml_token}}\"\t\n}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-sso-service-{{sso}}/authenticate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-sso-service-{{sso}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/eligibility-service-{{eligibility}}product/eligibility/hatch/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has eligibility false\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.isEligible).to.be.equal(false);  ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"productId\":\"P_HAT_PCA\",\"arrangementType\":\"PCA\"}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/eligibility-service-{{eligibility}}/product/eligibility/hatch/parent",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"eligibility-service-{{eligibility}}",
+								"product",
+								"eligibility",
+								"hatch",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Failure_Indicator657",
+			"item": [
+				{
+					"name": "302 /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"   var _url = require('url')",
+									"   var locationHeader = postman.getResponseHeader(\"Location\")",
+									"   var url = _url.parse(locationHeader,true)",
+									"   ",
+									"   pm.environment.set('online_login_url',locationHeader)",
+									"   pm.environment.set('online_host',url.hostname)",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/logon/login.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"logon",
+								"login.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "online /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"value\")).to.not.be.empty\r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{online_login_url}}",
+							"host": [
+								"{{online_login_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/primarylogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/login?mobile=false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmLogin:strCustomerLogin_userID",
+									"value": "{{userID_Ind657}}",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:strCustomerLogin_pwd",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "target",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "testenv",
+									"value": "https://{{host}}/personal/login",
+									"type": "text"
+								},
+								{
+									"key": "hdn_mobile",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dclinkjourid",
+									"value": "RiVUKTMVBgjg1ESsspdMGq8wZXde08st",
+									"type": "text"
+								},
+								{
+									"key": "wup_url",
+									"value": "https://wup-karma.lloydsbank.co.uk/client/v3/web/wup?cid=karma",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:btnLogin1",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{online_host}}/personal/primarylogin",
+							"protocol": "https",
+							"host": [
+								"{{online_host}}"
+							],
+							"path": [
+								"personal",
+								"primarylogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/login?mobile=false",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/a/logon/entermemorableinformation.jsp\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/login?mobile=false",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"login"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"name\")).to.not.be.empty \r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"it should ask for memorableInfo\", () => {\r",
+									"\r",
+									"    var passWord = \"t35ting\"; \r",
+									"    var passChar; \r",
+									"    $(\"select\").each(function (i,elem) {\r",
+									"        var num = $(\"label[for='frmentermemorableinformation1:strEnterMemorableInformation_memInfo\" + (i+1) + \"'], label[for= 'frmLogin:strEnterMI\" + (i+1) + \"'] \")\r",
+									"        .text().substring(10, 11)\r",
+									"        var charVal = parseInt(num); \r",
+									"        passChar = passWord.substring(charVal - 1, charVal); \r",
+									"        //$(this).val(\" \" + passChar);\r",
+									"        console.log(passChar)\r",
+									"        pm.environment.set('memorable'+(i+1), passChar)\r",
+									"\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.environment.set('clientSysTime', Date.now())\r",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/pageLoad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/pageLoad?clientSysTime={{clientSysTime}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"pageLoad"
+							],
+							"query": [
+								{
+									"key": "clientSysTime",
+									"value": "{{clientSysTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo1",
+									"value": "&nbsp;{{memorable1}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo2",
+									"value": "&nbsp;{{memorable2}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo3",
+									"value": "&nbsp;{{memorable3}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1",
+									"value": "frmentermemorableinformation1",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:btnContinue",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/account_overview_personal/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/account_overview_personal/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"account_overview_personal",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/common-api/v2/retail-identity-assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns saml token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.samlToken).to.not.be.empty;",
+									"    postman.setEnvironmentVariable(\"saml_token\", jsonData.samlToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/common-api/v2/retail-identity-assertion",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"common-api",
+								"v2",
+								"retail-identity-assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-initiate-service-v1/initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'id', 'brand', 'channel' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid brand\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.brand).to.eql(pm.variables.get(\"brand\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid channel\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.channel).to.eql(pm.variables.get(\"channel\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-initiate-service-{{initiate}}/initiate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-initiate-service-{{initiate}}",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-sso-service-v1/authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'logoutURL', 'keepAliveURL', 'returnURL' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid logoutURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.logoutURL).to.include(\"/personal/link?Action=autologoff\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid keepAliveURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.keepAliveURL).to.include(\"/personal/common-api/v1/keepAlive\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid returnURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.returnURL).to.include(\"sso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"samlToken\":\"{{saml_token}}\"\t\n}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-sso-service-{{sso}}/authenticate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-sso-service-{{sso}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/eligibility-service-{{eligibility}}product/eligibility/hatch/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has eligibility false\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.isEligible).to.be.equal(false); ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"productId\":\"P_HAT_PCA\",\"arrangementType\":\"PCA\"}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/eligibility-service-{{eligibility}}/product/eligibility/hatch/parent",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"eligibility-service-{{eligibility}}",
+								"product",
+								"eligibility",
+								"hatch",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Failure_Current10",
+			"item": [
+				{
+					"name": "302 /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"   var _url = require('url')",
+									"   var locationHeader = postman.getResponseHeader(\"Location\")",
+									"   var url = _url.parse(locationHeader,true)",
+									"   ",
+									"   pm.environment.set('online_login_url',locationHeader)",
+									"   pm.environment.set('online_host',url.hostname)",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/logon/login.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"logon",
+								"login.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "online /personal/logon/login.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"value\")).to.not.be.empty\r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{online_login_url}}",
+							"host": [
+								"{{online_login_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/primarylogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   ",
+									"",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/login?mobile=false\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmLogin:strCustomerLogin_userID",
+									"value": "{{userID_Cur10}}",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:strCustomerLogin_pwd",
+									"value": "{{password1}}",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "target",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "testenv",
+									"value": "https://{{host}}/personal/login",
+									"type": "text"
+								},
+								{
+									"key": "hdn_mobile",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dclinkjourid",
+									"value": "RiVUKTMVBgjg1ESsspdMGq8wZXde08st",
+									"type": "text"
+								},
+								{
+									"key": "wup_url",
+									"value": "https://wup-karma.lloydsbank.co.uk/client/v3/web/wup?cid=karma",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmLogin:btnLogin1",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{online_host}}/personal/primarylogin",
+							"protocol": "https",
+							"host": [
+								"{{online_host}}"
+							],
+							"path": [
+								"personal",
+								"primarylogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/login?mobile=false",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Redirect location is correct\", function () {",
+									"   pm.response.to.have.header(\"Location\");",
+									"   pm.response.to.be.header(\"Location\", \"https://\"+pm.environment.get(\"host\")+\"/personal/a/logon/entermemorableinformation.jsp\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/login?mobile=false",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"login"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"it should return a token\", () => { \r",
+									"    pm.expect($('input[name=submitToken]').attr(\"name\")).to.not.be.empty \r",
+									"    pm.environment.set('submitToken', $('input[name=submitToken]').attr(\"value\"))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"it should ask for memorableInfo\", () => {\r",
+									"\r",
+									"    var passWord = \"t35ting\"; \r",
+									"    var passChar; \r",
+									"    $(\"select\").each(function (i,elem) {\r",
+									"        var num = $(\"label[for='frmentermemorableinformation1:strEnterMemorableInformation_memInfo\" + (i+1) + \"'], label[for= 'frmLogin:strEnterMI\" + (i+1) + \"'] \")\r",
+									"        .text().substring(10, 11)\r",
+									"        var charVal = parseInt(num); \r",
+									"        passChar = passWord.substring(charVal - 1, charVal); \r",
+									"        //$(this).val(\" \" + passChar);\r",
+									"        console.log(passChar)\r",
+									"        pm.environment.set('memorable'+(i+1), passChar)\r",
+									"\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.environment.set('clientSysTime', Date.now())\r",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/pageLoad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/pageLoad?clientSysTime={{clientSysTime}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"pageLoad"
+							],
+							"query": [
+								{
+									"key": "clientSysTime",
+									"value": "{{clientSysTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "302 /personal/a/logon/entermemorableinformation.jsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo1",
+									"value": "&nbsp;{{memorable1}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo2",
+									"value": "&nbsp;{{memorable2}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:strEnterMemorableInformation_memInfo3",
+									"value": "&nbsp;{{memorable3}}",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1",
+									"value": "frmentermemorableinformation1",
+									"type": "text"
+								},
+								{
+									"key": "submitToken",
+									"value": "{{submitToken}}",
+									"type": "text"
+								},
+								{
+									"key": "hasJS",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "frmentermemorableinformation1:btnContinue",
+									"value": "Continue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{host}}/personal/a/logon/entermemorableinformation.jsp",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"logon",
+								"entermemorableinformation.jsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/a/account_overview_personal/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const $ = cheerio.load(pm.response.text())\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/a/account_overview_personal/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"a",
+								"account_overview_personal",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/personal/common-api/v2/retail-identity-assertion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns saml token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.samlToken).to.not.be.empty;",
+									"    postman.setEnvironmentVariable(\"saml_token\", jsonData.samlToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/personal/common-api/v2/retail-identity-assertion",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"personal",
+								"common-api",
+								"v2",
+								"retail-identity-assertion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-initiate-service-v1/initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'id', 'brand', 'channel' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid brand\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.brand).to.eql(pm.variables.get(\"brand\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid channel\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.channel).to.eql(pm.variables.get(\"channel\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-initiate-service-{{initiate}}/initiate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-initiate-service-{{initiate}}",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/savings-sso-service-v1/authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has 3 fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Object.keys(jsonData)).to.eql([ 'logoutURL', 'keepAliveURL', 'returnURL' ]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body has valid logoutURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.logoutURL).to.include(\"/personal/link?Action=autologoff\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid keepAliveURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.keepAliveURL).to.include(\"/personal/common-api/v1/keepAlive\");",
+									"});",
+									"",
+									"pm.test(\"Response body has valid returnURL\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.returnURL).to.include(\"sso\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"samlToken\":\"{{saml_token}}\"\t\n}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/savings-sso-service-{{sso}}/authenticate",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"savings-sso-service-{{sso}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/consumer-onboarding-ms/savings/eligibility-service-{{eligibility}}product/eligibility/hatch/parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has eligibility false\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.isEligible).to.be.equal(false);  ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"productId\":\"P_HAT_PCA\",\"arrangementType\":\"PCA\"}"
+						},
+						"url": {
+							"raw": "https://{{host}}/{{base_path}}/eligibility-service-{{eligibility}}/product/eligibility/hatch/parent",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{base_path}}",
+								"eligibility-service-{{eligibility}}",
+								"product",
+								"eligibility",
+								"hatch",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;",
+					"tests[\"[INFO] Response: \" + responseBody] = true;"
+				]
+			}
+		}
+	]
+}

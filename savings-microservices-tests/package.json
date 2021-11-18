@@ -1,0 +1,15 @@
+{
+  "name": "co-tests",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "newman": "4.6.1",
+    "newman-reporter-htmlextra": "1.14.0",
+    "yargs": "15.3.1"
+  },
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
